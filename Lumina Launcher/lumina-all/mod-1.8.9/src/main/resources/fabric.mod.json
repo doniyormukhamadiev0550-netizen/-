@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "id": "lumina",
+  "version": "${version}",
+  "name": "Lumina Client",
+  "description": "Glass menu, themes, custom main menu and HUD modules. Right Shift opens the menu.",
+  "environment": "client",
+  "entrypoints": { "main": ["dev.lumina.LuminaMod"] },
+  "mixins": ["lumina.mixins.json"],
+  "depends": { "fabricloader": ">=0.14.0", "minecraft": "1.8.9" }
+}

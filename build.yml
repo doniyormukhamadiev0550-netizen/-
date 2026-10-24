@@ -1,0 +1,61 @@
+name: Build Lumina
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  mod-1-21-11:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: "9.2.1" }
+      - run: gradle build --no-daemon
+        working-directory: mod-1.21.11
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jar-1-21-11
+          path: mod-1.21.11/build/libs/lumina-*+mc1.21.11.jar
+
+  mod-1-8-9:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: "8.10.2" }
+      - run: gradle build --no-daemon
+        working-directory: mod-1.8.9
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jar-1-8-9
+          path: mod-1.8.9/build/libs/lumina-*+mc1.8.9.jar
+
+  launcher:
+    needs: [mod-1-21-11, mod-1-8-9]
+    if: ${{ !cancelled() }}   # still build the exe if a mod fails to compile
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: jar-*
+          path: launcher/client
+          merge-multiple: true
+      - run: pip install -r requirements.txt pyinstaller
+        working-directory: launcher
+      - run: pyinstaller --noconfirm --onefile --windowed --name LuminaLauncher launcher.py
+        working-directory: launcher
+      - run: xcopy /E /I /Y client dist\client
+        working-directory: launcher
+        shell: cmd
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Lumina
+          path: launcher/dist

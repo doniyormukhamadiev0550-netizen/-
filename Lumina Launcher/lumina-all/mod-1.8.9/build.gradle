@@ -1,0 +1,37 @@
+import groovy.json.JsonSlurper
+
+plugins {
+    id 'fabric-loom' version '1.7-SNAPSHOT'
+    id 'legacy-looming' version '1.7-SNAPSHOT' // must match fabric-loom
+}
+
+version = project.mod_version
+group = 'dev.lumina'
+base { archivesName = 'lumina' }
+
+def yarnBuild = project.findProperty('yarn_build')
+if (!yarnBuild) {
+    try {
+        def list = new JsonSlurper().parseText(new URL("https://meta.legacyfabric.net/v2/versions/yarn/${project.minecraft_version}").text)
+        yarnBuild = list[0].build
+    } catch (Exception e) {
+        throw new GradleException("Could not look up legacy yarn build. Set yarn_build in gradle.properties (see https://meta.legacyfabric.net/v2/versions/yarn/1.8.9)", e)
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings legacy.yarn(project.minecraft_version, yarnBuild)
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') { expand 'version': project.version }
+}
+
+tasks.withType(JavaCompile).configureEach { options.release = 8 }
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "lumina",
+  "version": "${version}",
+  "name": "Lumina Client",
+  "description": "Glass menu, themes, custom main menu and 30 modules. Right Shift opens the menu.",
+  "environment": "client",
+  "entrypoints": { "client": ["dev.lumina.LuminaClient"] },
+  "mixins": ["lumina.mixins.json"],
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

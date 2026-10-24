@@ -1,0 +1,8 @@
+{
+  "required": false,
+  "minVersion": "0.8",
+  "package": "dev.lumina.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "client": ["InGameHudMixin", "TitleScreenMixin", "HandledScreenMixin"],
+  "injectors": { "defaultRequire": 0 }
+}

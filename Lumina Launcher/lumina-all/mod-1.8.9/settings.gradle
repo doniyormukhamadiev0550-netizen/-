@@ -1,0 +1,9 @@
+pluginManagement {
+    repositories {
+        maven { url = 'https://maven.fabricmc.net/' }
+        maven { name = 'legacy-fabric'; url = 'https://repo.legacyfabric.net/repository/legacyfabric/' }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+rootProject.name = 'lumina-1.8.9'
